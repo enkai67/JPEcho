@@ -2,14 +2,26 @@
   "name": "jpecho",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "app.js",
   "scripts": {
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "@aws-sdk/client-s3": "3.501.0",
+    "axios": "^1.6.7",
+    "config": "^3.3.10",
+    "express": "4.18.2",
+    "joi": "^17.12.0",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "nodemon": "3.0.3",
+    "prettier": "3.2.4"
   }
 }
