@@ -13,5 +13,5 @@ app.get("/health", (_req, res) => res.success()); // health checker
 app.use(appRouter);
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server is running on http://localhost:${port}`);
 });
