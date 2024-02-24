@@ -23,13 +23,14 @@ const parseSrtFile = (downloadScript) => {
 const getVideoAndSubtitles = async (videoId) => {
     const currentDir = fileURLToPath(import.meta.url);
     const srtFilePath = join(currentDir, '../../script.srt');
-    const srtContent = readFileSync(srtFilePath, "utf-8"); //暫時
-    const subtitles = parseSrtFile(srtContent); //暫時
+    // const srtContent = readFileSync(srtFilePath, "utf-8"); //暫時
+    // const subtitles = parseSrtFile(srtContent); //暫時
 
-    const { videoUuid, videoTitle, videoUrl, s3Path } = await videoModel.getVideoAndSubtitles(videoId);
+    // const { videoUuid, videoTitle, videoUrl, s3Path } = await videoModel.getVideoAndSubtitles(videoId);
 
-    // const downloadScript = await S3Utils.downloadS3Object(s3Path); //AWS處理好要用S3 path取得srt檔
-    // parseSrtFile(downloadScript); //parse srt file
+    const s3Path = "tsd/aws_test_srt_file.srt";
+    const downloadScript = await S3Utils.downloadS3Object(s3Path);
+    parseSrtFile(downloadScript);
 
     const keywords = await videoModel.getKeywords(videoId);
 
