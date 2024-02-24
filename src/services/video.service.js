@@ -30,7 +30,7 @@ const getVideoAndSubtitles = async (videoId) => {
 
     const s3Path = "tsd/aws_test_srt_file.srt";
     const downloadScript = await S3Utils.downloadS3Object(s3Path);
-    parseSrtFile(downloadScript);
+    const subtitles = parseSrtFile(downloadScript);
 
     const keywords = await videoModel.getKeywords(videoId);
 
