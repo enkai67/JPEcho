@@ -1,10 +1,10 @@
 import mysql from "mysql";
 
 const connection = mysql.createConnection({
-    host: 'localInstance3306',
-    user: 'root',
-    password: 'password',
-    database: 'jpEcho',
+    host: "localhost",
+    user: "root",
+    password: "password",
+    database: "jpEcho"
 });
 
 const connectToDatabase = async () => {

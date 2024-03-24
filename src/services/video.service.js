@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import { join } from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 
 import videoModel from "../models/video.model.js";
 import S3Utils from "../utils/s3.js";
@@ -9,11 +9,11 @@ import videoUtils from "../utils/video.js";
 const parseSrtFile = (downloadScript) => {
     const lines = downloadScript.split("\n\n");
 
-    return lines.map(line => {
+    return lines.map((line) => {
         const [serial, time, ...textLines] = line.split("\n").filter(Boolean);
         const [start, end] = time.split(" --> ");
 
-        const cleanedTextLines = textLines.map(line => line.replace(/^>>\s*/, ''));
+        const cleanedTextLines = textLines.map((line) => line.replace(/^>>\s*/, ""));
         const text = cleanedTextLines.join("\n");
 
         return { serial, start, end, text };
@@ -22,22 +22,23 @@ const parseSrtFile = (downloadScript) => {
 
 const getVideoAndSubtitles = async (videoId) => {
     const currentDir = fileURLToPath(import.meta.url);
-    const srtFilePath = join(currentDir, '../../script.srt');
+    const srtFilePath = join(currentDir, "../../script.srt");
     // const srtContent = readFileSync(srtFilePath, "utf-8"); //暫時
     // const subtitles = parseSrtFile(srtContent); //暫時
 
-    // const { videoUuid, videoTitle, videoUrl, s3Path } = await videoModel.getVideoAndSubtitles(videoId);
+    videoId = "1"; //delete later
+    const [videoInfo] = await videoModel.getVideoAndSubtitles(videoId);
+    const { videoTitle, videoUrl, s3Path } = videoInfo;
 
-    const s3Path = "tsd/aws_test_srt_file.srt";
     const downloadScript = await S3Utils.downloadS3Object(s3Path);
     const subtitles = parseSrtFile(downloadScript);
 
     const keywords = await videoModel.getKeywords(videoId);
 
-    const updatedSubtitles = subtitles.map(subtitle => {
-        const keywordsFound = keywords.filter(keyword => subtitle.text.includes(keyword));
+    const updatedSubtitles = subtitles.map((subtitle) => {
+        const keywordsFound = keywords.filter((keyword) => subtitle.text.includes(keyword));
 
-        (keywordsFound) ? keywordsFound : null;
+        keywordsFound ? keywordsFound : null;
 
         return { ...subtitle, keywords: keywordsFound };
     });

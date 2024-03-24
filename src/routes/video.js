@@ -11,7 +11,7 @@ video.get(
 );
 
 video.get(
-    '/videoId/keywords', //'/:videoId/keywords',
+    '/videoId/keywords', //'/:videoId/keywords', cuz currently for test
      wrapHandlerWithErrorCatcher(videoController.getKeywords)
 )
 

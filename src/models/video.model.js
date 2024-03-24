@@ -1,30 +1,35 @@
-import db from "./baseModel.model.js"; 
+import db from "./baseModel.model.js";
 
 const getVideoAndSubtitles = async (videoId) => {
     try {
         await db.connectToDatabase();
 
-        return result = await db.executeQuery(
+        return await db.executeQuery(
             `
             SELECT 
-                video_uuid AS "videoUuid",
-                video_title AS "videoTitle",
-                video_url AS "videoUrl",
-                s3_path AS "s3Path"
-            FROM videos
-            WHERE video_id = ?;
-            `
-        ,[videoId]);
+                title AS "videoTitle",
+                url AS "videoUrl",
+                s.s3_path AS "s3Path"
+            FROM videos v
+            JOIN subtitles s
+                ON v.video_id = s.video_id
+            WHERE v.video_id = ${videoId};
+            `,
+            [videoId]
+        );
+    } catch (error) {
+        console.error("Error in getVideoAndSubtitles:", error);
+        throw error;
     } finally {
         await db.disconnectFromDatabase();
     }
-}
+};
 
 const getKeywords = async (videoId) => {
     try {
         await db.connectToDatabase();
 
-        return result = await db.executeQuery(
+        return await db.executeQuery(
             `
             SELECT 
                 japanese_words AS "keywords"
@@ -33,41 +38,50 @@ const getKeywords = async (videoId) => {
                 ON w.word_id = wsr.word_id
             JOIN subtitles s
                 ON s.subtitle_id = wsr.subtitle_id
-            WHERE video_id = ?;
-            `
-        ,[videoId]);
+            WHERE video_id = ${videoId};
+            `,
+            [videoId]
+        );
+    } catch (error) {
+        console.error("Error in getVideoAndSubtitles:", error);
+        throw error;
     } finally {
         await db.disconnectFromDatabase();
     }
-}
+};
 
 const getQuizByVideoId = async (videoId) => {
-    return [
-        {
-            quiz_id: "quizId",
-            video_id: "video_id",
-            timestamp_start: "timestamp_start",
-            timestamp_end: "timestamp_end",
-            question: "question",
-            choice: "choice",
-            answer: "answer"
-        },
-        {
-            quiz_id: "quizId",
-            video_id: "video_id",
-            timestamp_start: "timestamp_start",
-            timestamp_end: "timestamp_end",
-            question: "question",
-            choice: "choice",
-            answer: "answer"
-        }
-    ];
+    try {
+        await db.connectToDatabase();
+
+        return await db.executeQuery(
+            `
+            SELECT 
+                quiz_id AS "quizId",
+                question,
+                choice,
+                answer
+            FROM words w
+            JOIN wordSubtitleRelations wsr
+                ON w.word_id = wsr.word_id
+            JOIN subtitles s
+                ON s.subtitle_id = wsr.subtitle_id
+            WHERE video_id = ${videoId};
+            `,
+            [videoId]
+        );
+    } catch (error) {
+        console.error("Error in getVideoAndSubtitles:", error);
+        throw error;
+    } finally {
+        await db.disconnectFromDatabase();
+    }
 };
 
 const getQuestionnaireByVideoId = async (videoId) => {
     return {
         questionnaire: "example.com"
-    }
+    };
 };
 
 export default {
